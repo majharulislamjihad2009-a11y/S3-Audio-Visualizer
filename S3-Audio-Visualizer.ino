@@ -46,7 +46,7 @@ void loop() {
     i2s_read(I2S_NUM_0, &raw_samples, sizeof(raw_samples), &bytesRead, portMAX_DELAY);
 
     for (int i = 0; i < SAMPLES; i++) {
-        vReal[i] = (double)(raw_samples[i] >> 11); // Sensitivity remains same as original
+        vReal[i] = (double)(raw_samples[i] >> 11); 
         vImag[i] = 0;
     }
 
@@ -60,35 +60,35 @@ void loop() {
     int numBars = 30;
     
     for (int i = 0; i < numBars; i++) {
-        // বাম পাশের বারগুলোর (i < 10) জন্য ডিভাইডার বাড়িয়ে সেন্সিটিভিটি কমানো হয়েছে
+        
         int currentDivider = (i < 10) ? 700 : 450; 
         
         int barHeight = (int)vReal[i + 2] / currentDivider;
         if (barHeight > centerY) barHeight = centerY;
 
-        // Smooth decay logic
+        
         if (barHeight < peak[i]) peak[i] -= 2;
         else peak[i] = barHeight;
 
-        int x = i * 4; // Spacing between bars
+        int x = i * 4;
         int h = peak[i];
 
         if (h > 0) {
-            // ১. মূল মাঝখানের লাইন থেকে উপরে এবং নিচে ড্রয়িং
+           
             display.drawLine(x, centerY - h, x, centerY + h, WHITE);
             
-            // ২. স্টিকের মাথায় ছোট "Floating" ডট
+            
             display.drawPixel(x, centerY - h - 2, WHITE);
             display.drawPixel(x, centerY + h + 2, WHITE);
             
-            // ৩. এক্সট্রা ডিটেইল: বেসের দিকে মোটা কাঠি
+            
             if(i < 8) {
                 display.drawLine(x, centerY - h, x, centerY + h, WHITE);
             }
         }
     }
     
-    // স্ক্রিনের একদম মাঝখানে একটা হালকা হরাইজন্টাল লাইন
+    
     display.drawFastHLine(0, centerY, SCREEN_WIDTH, WHITE);
     
     display.display();
